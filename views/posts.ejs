@@ -1,0 +1,19 @@
+<% include ./partials/header.ejs %>
+
+    <div class="container-fluid">
+       <div class="row" style="display:flex; flex-wrap: wrap;">
+            <% posts.forEach(function(post){ %>
+                <div class="col-md-3 col-sm-6">
+                    <div class="thumbnail">
+                        <h4 class="text-center"><%= post.instaname %></h4>
+                        <p><%= post.tijdstip %></p>
+                        <p><%= post.email %></p>
+                        <p class="partnerlink"><%= post.link %></p>
+                        <p><%= post.voordeel %></p>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+<% include ./partials/footer.ejs %>

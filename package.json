@@ -1,0 +1,29 @@
+{
+  "name": "2brand",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baaswietse/2brand.git"
+  },
+  "author": "Wietse Delclef",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/baaswietse/2brand/issues"
+  },
+  "homepage": "https://github.com/baaswietse/2brand#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "moment-timezone": "^0.5.21",
+    "mongoose": "^5.2.9",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  }
+}
