@@ -7,6 +7,10 @@
 #partnerimage{
     width: 100%;
 }
+#postlink{
+    word-break: break-all;
+    width: 20%
+}
 .delete-form{
     display: inline;
 }

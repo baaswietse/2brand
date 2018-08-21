@@ -23,7 +23,7 @@
                                 <td><%= post.partner %></td>
                                 <td><%= post.tijdstip %></td>
                                 <td><%= post.email %></td>
-                                <td class="partnertlink"><%= post.link %></td>
+                                <td class="partnertlink" id="postlink"><a href="<%= post.link %>"><%= post.link %></a></td>
                                 <td><%= post.voordeel %></td>
                                 <td>
                                     <form class="delete-form" method="POST" action="/posts/<%= post._id %>?_method=DELETE" >
