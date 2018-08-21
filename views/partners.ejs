@@ -8,6 +8,10 @@
                         <h4 class="text-center"><%= partner.name %></h4>
                         <img id="partnerimage" src="<%= partner.image %>">
                         <p class="partner-text"><%= partner.voordeel %></p>
+                        <a class="btn btn-sm btn-warning partner-text" href="/partners/<%= partner._id %>/edit">edit</a>
+                        <form class="delete-form" method="POST" action="/partners/<%= partner._id %>?_method=DELETE" >
+                            <input type="Submit" class="btn btn-sm btn-danger" value="Delete">
+                        </form>
                     </div>
                 </div>
             <% }); %>

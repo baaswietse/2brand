@@ -2,33 +2,40 @@
 
     <div class="container-fluid">
        <!-- ITERATE OVER PARTNERS -->
-        <h2>Boogo</h2>
-        <div class="thumbnail">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>username</th>
-                        <th>post voor</th>
-                        <th>tijdstip</th>
-                        <th>email</th>
-                        <th>link</th>
-                        <th>gekozen voordeel</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% posts.forEach(function(post){ %>
+       <% partners.forEach(function(partner){ %>
+            <h2><%= partner.name %></h2>
+            <div class="thumbnail">
+                <table class="table table-hover">
+                    <thead>
                         <tr>
-                            <td><%= post.instaname %></td>
-                            <td><%= post.partner %></td>
-                            <td><%= post.tijdstip %></td>
-                            <td><%= post.email %></td>
-                            <td class="partnertlink"><%= post.link %></td>
-                            <td><%= post.voordeel %></td>
+                            <th>username</th>
+                            <th>post voor</th>
+                            <th>tijdstip</th>
+                            <th>email</th>
+                            <th>link</th>
+                            <th>gekozen voordeel</th>
                         </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        <% partner.posts.forEach(function(post){ %>
+                            <tr>
+                                <td><%= post.instaname %></td>
+                                <td><%= post.partner %></td>
+                                <td><%= post.tijdstip %></td>
+                                <td><%= post.email %></td>
+                                <td class="partnertlink"><%= post.link %></td>
+                                <td><%= post.voordeel %></td>
+                                <td>
+                                    <form class="delete-form" method="POST" action="/posts/<%= post._id %>?_method=DELETE" >
+                                        <input type="Submit" class="btn btn-xs btn-danger" value="Delete">
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% }) %>
     </div>
 
 <% include ./partials/footer.ejs %>

@@ -2,8 +2,7 @@ var express = require("express"),
     bodyParser = require("body-parser") ,
     mongoose = require('mongoose'),
     moment = require("moment-timezone"),
-    passport = require('passport'),
-    LocalStrategy   = require("passport-local"),
+    methodOverride  = require("method-override"),
     User = require("./models/user"),
     Post = require("./models/post"),
     Partner = require("./models/partner")
@@ -12,6 +11,7 @@ var express = require("express"),
 var app= express()
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static(__dirname + "/public"))      //links to the css folder
+app.use(methodOverride("_method"))  
 
 mongoose.connect("mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand", { useNewUrlParser: true })
 
@@ -22,13 +22,13 @@ app.get("/", function(req, res){
 })
 //SHOW
 app.get("/posts", function(req, res){
-    Post.find({}, function(err, allPosts){
+    Partner.find({}).populate("posts").exec(function(err, partners){
         if(err){
             console.log(err)
         }else{
-            res.render("posts.ejs",{posts: allPosts})
+            res.render("posts.ejs",{partners: partners})
         }
-    })    
+    })
 })
 
 //NEW
@@ -44,18 +44,41 @@ app.get("/posts/new", function(req, res){
 
 //CREATE
 app.post("/posts", function(req, res){
-    var currentTime = moment().tz("Europe/Paris").format('DD/MM/YYYY HH:mm:ss ')
-    console.log(req.body)
-    var newPost = {instaname: req.body.instaname, partner: req.body.partner, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}
-    Post.create(newPost, function(err, newPost){
+    Partner.findOne({name: req.body.partner}, function(err, foundPartner){
         if(err){
             console.log(err)
-            res.redirect("back")
         }else{
-            res.redirect("/posts")
+            var currentTime = moment().tz("Europe/Paris").format('DD/MM/YYYY HH:mm:ss ')
+            var newPost = {instaname: req.body.instaname, partner: req.body.partner, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}
+            Post.create(newPost, function(err, newPost){
+                if(err){
+                    console.log(err)
+                    res.redirect("back")
+                }else{
+                    foundPartner.posts.push(newPost)
+                    foundPartner.save()
+                    res.redirect("/posts")
+                }
+            })
         }
     })
 })
+
+//DESTROY
+app.delete("/posts/:id",function(req,res){
+    Partner.update({},{$pull : {posts: req.params.id}}, function(){ //delete the id from the partners DB
+        Post.findByIdAndRemove(req.params.id, function(err){
+            if(err){
+                console.log(err)
+            }else{  
+                console.log("deleted")
+                res.redirect("/posts")
+            }
+        })
+    })
+})
+
+
 
 //==============PARTNERS==================
 //SHOW
@@ -88,6 +111,41 @@ app.post("/partners", function(req, res){
 })
 
 
+//EDIT
+app.get("/partners/:id/edit", function(req, res){
+    Partner.findById(req.params.id,function(err, foundPartner) {
+        if(err){
+            console.log(err)
+        }else{
+            res.render("editpartner.ejs", {partner: foundPartner})
+        }
+    })
+    
+})
+
+
+//UPDATE
+app.put("/partners/:id", function(req,res){
+    Partner.findByIdAndUpdate(req.params.id, req.body.partner ,function(err, updatedPartner){
+        if(err){
+            res.redirect("back")
+        }else{
+            res.redirect("/partners")
+        }
+    })
+})
+
+//DESTROY
+app.delete("/partners/:id",function(req,res){
+    Partner.findByIdAndRemove(req.params.id, function(err){
+        if(err){
+            console.log(err)
+        }else{  
+            console.log("deleted")
+            res.redirect("/posts")
+        }
+    })
+})
 
 
 

@@ -7,11 +7,14 @@
 #partnerimage{
     width: 100%;
 }
+.delete-form{
+    display: inline;
+}
 .partnerlink{
     word-wrap: break-word;
 }
 .partner-text{
-    padding-left: 20px;
+    margin-left: 20px;
 }
 .navbar-default{
     background-color: #337ab7;
