@@ -1,18 +1,31 @@
 <% include ./partials/header.ejs %>
 
     <div class="container-fluid">
-       <div class="row" style="display:flex; flex-wrap: wrap;">
-            <% posts.forEach(function(post){ %>
-                <div class="col-md-3 col-sm-6">
-                    <div class="thumbnail">
-                        <h4 class="text-center"><%= post.instaname %></h4>
-                        <p><%= post.tijdstip %></p>
-                        <p><%= post.email %></p>
-                        <p class="partnerlink"><%= post.link %></p>
-                        <p><%= post.voordeel %></p>
-                    </div>
-                </div>
-            <% }); %>
+        <!-- ITERATE OVER PARTNERS -->
+        <h2>Boogo</h2>
+        <div class="thumbnail">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>username</th>
+                        <th>tijdstip</th>
+                        <th>email</th>
+                        <th>link</th>
+                        <th>voordeel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% posts.forEach(function(post){ %>
+                        <tr>
+                            <td><%= post.instaname %></td>
+                            <td><%= post.tijdstip %></td>
+                            <td><%= post.email %></td>
+                            <td class="partnertlink"><%= post.link %></td>
+                            <td><%= post.voordeel %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
         </div>
     </div>
 
