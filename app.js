@@ -33,14 +33,20 @@ app.get("/posts", function(req, res){
 
 //NEW
 app.get("/posts/new", function(req, res){
-    res.render("newpost.ejs")
+    Partner.find({}, function(err, allPartners) {
+        if(err){
+            console.log(err)
+        }else{
+            res.render("newpost.ejs", {partners: allPartners})
+        }
+    })
 })
 
 //CREATE
 app.post("/posts", function(req, res){
     var currentTime = moment().tz("Europe/Paris").format('DD/MM/YYYY HH:mm:ss ')
-    
-    var newPost = {instaname: req.body.instaname, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}
+    console.log(req.body)
+    var newPost = {instaname: req.body.instaname, partner: req.body.partner, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}
     Post.create(newPost, function(err, newPost){
         if(err){
             console.log(err)
