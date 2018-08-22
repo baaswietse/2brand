@@ -92,15 +92,22 @@ app.put("/posts/:id/status", function(req,res){
 
 //DESTROY
 app.delete("/posts/:id",function(req,res){
-    Partner.update({},{$pull : {posts: req.params.id}}, function(){ //delete the id from the partners DB
-        Post.findByIdAndRemove(req.params.id, function(err){
-            if(err){
-                console.log(err)
-            }else{  
-                console.log("deleted")
-                res.redirect("/posts")
-            }
-        })
+    
+    Post.findById(req.params.id, function(err, post){       //needed to know which partner to remove it from
+        if(err){
+            console.log(err)
+        }else{
+            Partner.update({name: post.partner},{$pull : {posts: req.params.id}}, function(){ //delete the id from the partners DB
+                post.remove(function(err){  //delete the post from the posts DB
+                    if(err){
+                        console.log(err)
+                    }else{  
+                        console.log("deleted")
+                        res.redirect("/posts")
+                    }
+                })
+            })
+        }
     })
 })
 

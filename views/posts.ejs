@@ -18,6 +18,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <input type="checkbox" id="optiontoggle"> status/delete
                         <% partner.posts.forEach(function(post){ %>
                             <tr <% if(post.status){ %> class="statusgoed resultContainer" <% }else{ %> class="statusslecht resultContainer" <% } %>>
                                 <td><%= post.instaname %></td>
@@ -31,7 +32,7 @@
                                         <input type="Submit" class="viewThisResult btn btn-xs btn-warning buttonmargin" value="Status">
                                     </form>
                                     <form class="delete-form" method="POST" action="/posts/<%= post._id %>?_method=DELETE" >
-                                        <input type="Submit" class="viewThisResult btn btn-xs btn-danger" value="Delete">
+                                        <input type="Submit" onclick="return confirm('Are you sure you want to delete this item?')" class="viewThisResult btn btn-xs btn-danger" value="Delete">
                                     </form>
                                 </td>
                             </tr>

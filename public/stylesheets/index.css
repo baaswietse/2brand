@@ -7,10 +7,10 @@
 #partnerimage{
     width: 100%;
 }
-.resultContainer .viewThisResult {
+.viewThisResult {
     display: none;
 }
-.resultContainer:hover .viewThisResult {
+ #optiontoggle:checked ~ * .viewThisResult{
     display: block;
 }
 .resultContainer{
