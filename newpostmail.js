@@ -17,7 +17,7 @@ function sendmail(post){
     
     const mailOptions = {
       from: 'wietse.spam69@gmail.com', // sender address
-      to: 'wietse.delclef@gmail.com', // list of receivers
+      to: 'info@2brand.be', // list of receivers
       subject: 'Nieuwe post door @' + post.instaname, // Subject line
       html: '<table> <tbody style="font-size: 15x"> <tr> <th align="left">Instagram: </th> <td>' + post.instaname + '</td> </tr> <tr> <th align="left">email: </th> <td>' + post.email + '</td> </tr> <tr> <th align="left">partner: </th> <td>' + post.partner + '</td> </tr> <tr> <th align="left">voordeel: </th> <td>' + post.voordeel + '</td> </tr> <tr> <th align="left">link: </th> <td>'+ post.link +'</td> </tr> </tbody></table>'
     };

@@ -2,7 +2,7 @@
 
     <div class="container-fluid">
        <!-- ITERATE OVER PARTNERS -->
-       <% partners.forEach(function(partner){ %>
+       <% partners.slice().reverse().forEach(function(partner){ %>      <!-- displays list backwards -->
             <h2 class="animated slideInUp"><%= partner.name %></h2>
             <div class="thumbnail animated slideInUp">
                 <table class="table table">
