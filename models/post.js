@@ -8,7 +8,11 @@ var postSchema = new mongoose.Schema({
     email: String,
     voordeel: String,
     tijdstip: String,
-    partner: String
+    partner: String,
+    status: {
+        type: Boolean,
+        default: false
+    }
 })
 
 var Post = mongoose.model("Post", postSchema)         //DB object, creates collection "campgrounds" in the the "yelp_camp" database, name is refractored

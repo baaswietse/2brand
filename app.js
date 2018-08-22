@@ -66,6 +66,30 @@ app.post("/posts", function(req, res){
     })
 })
 
+//UPDATE status
+app.put("/posts/:id/status", function(req,res){
+    Post.findById(req.params.id, function(err, foundPost) {
+        if(err){
+            console.log(err)
+        }else{
+            var newstatus;
+            if(foundPost.status){
+                newstatus = false
+            }else{
+                newstatus = true
+            }
+            Post.findByIdAndUpdate(req.params.id, {status: newstatus} ,function(err, updatedPartner){
+                if(err){
+                    console.log(err)
+                }else{
+                    res.redirect("/posts")
+                }
+            })
+        }
+    })
+})
+
+
 //DESTROY
 app.delete("/posts/:id",function(req,res){
     Partner.update({},{$pull : {posts: req.params.id}}, function(){ //delete the id from the partners DB

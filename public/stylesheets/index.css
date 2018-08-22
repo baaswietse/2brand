@@ -7,6 +7,12 @@
 #partnerimage{
     width: 100%;
 }
+.statusgoed{
+    background-color: #def7e1;
+}
+.statusslecht{
+    background-color: #f7dede;
+}
 .postlinkwidth{
     word-break: break-all;
     width: 20%
