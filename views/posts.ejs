@@ -3,8 +3,8 @@
     <div class="container-fluid">
        <!-- ITERATE OVER PARTNERS -->
        <% partners.forEach(function(partner){ %>
-            <h2><%= partner.name %></h2>
-            <div class="thumbnail">
+            <h2 class="animated slideInUp"><%= partner.name %></h2>
+            <div class="thumbnail animated slideInUp">
                 <table class="table table">
                     <thead>
                         <tr>
@@ -14,23 +14,24 @@
                             <th>email</th>
                             <th>link</th>
                             <th>gekozen voordeel</th>
+                            <th>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% partner.posts.forEach(function(post){ %>
-                            <tr <% if(post.status){ %> class="statusgoed" <% }else{ %> class="statusslecht" <% } %> >
+                            <tr <% if(post.status){ %> class="statusgoed resultContainer" <% }else{ %> class="statusslecht resultContainer" <% } %>>
                                 <td><%= post.instaname %></td>
                                 <td><%= post.partner %></td>
                                 <td><%= post.tijdstip %></td>
                                 <td><%= post.email %></td>
                                 <td class="partnertlink postlinkwidth"><a href="<%= post.link %>"><%= post.link %></a></td>
                                 <td><%= post.voordeel %></td>
-                                <td>
+                                <td class="buttons">
                                     <form method="POST" action="/posts/<%= post._id %>/status?_method=PUT" >
-                                        <input type="Submit" class="btn btn-xs btn-warning" value="Status">
+                                        <input type="Submit" class="viewThisResult btn btn-xs btn-warning buttonmargin" value="Status">
                                     </form>
                                     <form class="delete-form" method="POST" action="/posts/<%= post._id %>?_method=DELETE" >
-                                        <input type="Submit" class="btn btn-xs btn-danger" value="Delete">
+                                        <input type="Submit" class="viewThisResult btn btn-xs btn-danger" value="Delete">
                                     </form>
                                 </td>
                             </tr>
