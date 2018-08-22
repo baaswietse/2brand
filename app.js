@@ -24,6 +24,10 @@ app.use(passport.session())
 passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+app.use(function(req, res, next){       //custom middleware, that adds the logged in users information to all our routes
+    res.locals.currentUser = req.user
+    next()
+})
 
 
 
