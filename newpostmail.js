@@ -18,8 +18,8 @@ function sendmail(post){
     const mailOptions = {
       from: 'wietse.spam69@gmail.com', // sender address
       to: 'wietse.delclef@gmail.com', // list of receivers
-      subject: 'Subject of your email', // Subject line
-      html: '<!DOCTYPE html><html lang="en"><head> <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> <title>Document</title></head><body> <div class="divider"> <p class="h1">Niewe post!</p> <table class="table"> <tbody> <tr> <th scope="row:">Instagram</th> <td>' + post.instaname + '</td> </tr> <tr> <th scope="row">email</th> <td>' + post.email + '</td> </tr> <tr> <th scope="row">partner</th> <td>' + post.partner + '</td> </tr> <tr> <th scope="row">voordeel</th> <td>' + post.voordeel + '</td> </tr> <tr> <th scope="row">link</th> <td>' + post.link + '</td> </tr> </tbody> </table> </div></body></html>'
+      subject: 'Nieuwe post door @' + post.instaname, // Subject line
+      html: '<table> <tbody style="font-size: 15x"> <tr> <th align="left">Instagram: </th> <td>' + post.instaname + '</td> </tr> <tr> <th align="left">email: </th> <td>' + post.email + '</td> </tr> <tr> <th align="left">partner: </th> <td>' + post.partner + '</td> </tr> <tr> <th align="left">voordeel: </th> <td>' + post.voordeel + '</td> </tr> <tr> <th align="left">link: </th> <td>'+ post.link +'</td> </tr> </tbody></table>'
     };
     
     transporter.sendMail(mailOptions, function(err, info) {
