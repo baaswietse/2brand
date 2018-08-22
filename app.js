@@ -3,6 +3,7 @@ var express = require("express"),
     mongoose = require('mongoose'),
     moment = require("moment-timezone"),
     methodOverride  = require("method-override"),
+    newpostmail = require("./newpostmail"),
     User = require("./models/user"),
     Post = require("./models/post"),
     Partner = require("./models/partner")
@@ -57,6 +58,7 @@ app.post("/posts", function(req, res){
                 }else{
                     foundPartner.posts.push(newPost)
                     foundPartner.save()
+                    //newpostmail({instaname: req.body.instaname, partner: req.body.partner, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}) //sends us a mail, see newpostmail file
                     res.redirect("/posts")
                 }
             })
