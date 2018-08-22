@@ -4,12 +4,30 @@ var express = require("express"),
     moment = require("moment-timezone"),
     methodOverride  = require("method-override"),
     newpostmail = require("./newpostmail"),
+    passport = require('passport'),
+    LocalStrategy   = require("passport-local"),
     User = require("./models/user"),
     Post = require("./models/post"),
     Partner = require("./models/partner")
 
 
 var app= express()
+
+//PASPORT CONFIG
+app.use(require("express-session")({
+    secret: "wietse is de coolste",
+    resave: false,
+    saveUninitialized : false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+
+
+
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static(__dirname + "/public"))      //links to the css folder
 app.use(methodOverride("_method"))  
@@ -22,7 +40,7 @@ app.get("/", function(req, res){
     res.redirect("/posts")  
 })
 //SHOW
-app.get("/posts", function(req, res){
+app.get("/posts", isLoggedIn, function(req, res){
     Partner.find({}).populate("posts").exec(function(err, partners){
         if(err){
             console.log(err)
@@ -115,7 +133,7 @@ app.delete("/posts/:id",function(req,res){
 
 //==============PARTNERS==================
 //SHOW
-app.get("/partners", function(req, res){
+app.get("/partners",isLoggedIn, function(req, res){
     Partner.find({}, function(err, allPartners){
         if(err){
             console.log(err)
@@ -126,7 +144,7 @@ app.get("/partners", function(req, res){
 })
 
 //NEW
-app.get("/partners/new", function(req, res){
+app.get("/partners/new", isLoggedIn, function(req, res){
     res.render("newpartner.ejs")
 })
 
@@ -145,7 +163,7 @@ app.post("/partners", function(req, res){
 
 
 //EDIT
-app.get("/partners/:id/edit", function(req, res){
+app.get("/partners/:id/edit", isLoggedIn, function(req, res){
     Partner.findById(req.params.id,function(err, foundPartner) {
         if(err){
             console.log(err)
@@ -181,8 +199,58 @@ app.delete("/partners/:id",function(req,res){
 })
 
 
+//==============LOGIN========================
+//SHOW
+app.get("/login", function(req, res) {
+    res.render("login.ejs")
+})
+
+//GET
+app.post("/login",   passport.authenticate("local", {successRedirect: "/posts",failureRedirect: "/login"})  ,function(req, res){
+                                                                                                                                    
+});  
+
+//logout
+app.get("/logout", function(req, res) {
+    req.logout()
+    res.redirect("/posts")
+})
 
 
+//============REGISTER========================
+//SHOW
+//=>UNCOMMENT TO ADD USERS//
+/*app.get("/register", function(req,res){
+    res.render("register.ejs")
+})
+
+//GET
+app.post("/register", function(req,res){
+    var newUser = new User({username: req.body.username})
+    User.register(newUser, req.body.password, function(err, user){
+        if(err){
+            console.log(err)
+            res.redirect("/register")
+        }else{
+            console.log("new user:\n", user)   //the new user
+            passport.authenticate("local")(req, res, function(){    //log the new user in
+                res.redirect("/posts")
+            })
+            
+        }
+    })
+})*/
+
+
+
+
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()){
+        return next()
+    }else{
+        res.redirect("/login")
+    }
+}
 
 app.listen(process.env.PORT, process.env.IP, function(){
    console.log("The YelpCamp Server Has Started!")
