@@ -30,9 +30,23 @@
     <% } %>
     
     <div class="container">
+        <% if(succes && succes.length > 0){ %>
+            <div class="alert alert-success" role="alert">
+                <%= succes %>
+            </div>
+        <% } %>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    <div class="container">
         <div class="row">
             <h1 style="text-align: center">Maak promotie</h1>
-            <div style="width: 30%; margin: 25px auto;">
+            <div style="width: 700px; margin: 25px auto;">
                 <form action="/posts" method="POST" id="partnerform">
                     <div class="form-group">
                         <input class="form-control" type="text" name="instaname" placeholder="Instagram naam">

@@ -29,3 +29,10 @@
                 </div>
             </div>
         </nav>
+        <div class="container">
+            <% if(succes && succes.length > 0){ %>
+                <div class="alert alert-success" role="alert">
+                    <%= succes %>
+                </div>
+            <% } %>
+        </div>

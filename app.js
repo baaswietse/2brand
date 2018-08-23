@@ -3,6 +3,7 @@ var express = require("express"),
     mongoose = require('mongoose'),
     moment = require("moment-timezone"),
     methodOverride  = require("method-override"),
+    flash = require("connect-flash"),
     newpostmail = require("./newpostmail"),
     passport = require('passport'),
     LocalStrategy   = require("passport-local"),
@@ -12,6 +13,8 @@ var express = require("express"),
 
 
 var app= express()
+app.use(flash())
+
 
 //PASPORT CONFIG
 app.use(require("express-session")({
@@ -24,8 +27,10 @@ app.use(passport.session())
 passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+
 app.use(function(req, res, next){       //custom middleware, that adds the logged in users information to all our routes
     res.locals.currentUser = req.user
+    res.locals.succes= req.flash("succes")
     next()
 })
 
@@ -45,11 +50,11 @@ app.get("/", function(req, res){
 })
 //SHOW
 app.get("/posts", isLoggedIn, function(req, res){
-    Partner.find({}).populate("posts").exec(function(err, partners){
+    Partner.find({}).populate("posts").exec(function(err, allPartners){
         if(err){
             console.log(err)
         }else{
-            res.render("posts.ejs",{partners: partners})
+            res.render("posts.ejs",{partners: allPartners})
         }
     })
 })
@@ -81,7 +86,8 @@ app.post("/posts", function(req, res){
                     foundPartner.posts.push(newPost)
                     foundPartner.save()
                     newpostmail({instaname: req.body.instaname, partner: req.body.partner, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}) //sends us a mail, see newpostmail file
-                    res.redirect("/posts")
+                    req.flash("succes", "Je post is succesvol opgestuurd! Houd je mailbox zeker in het oog, en vergeet niet bij spam te checken. Binnen de 24u ontvangt u het voordeel van ons!")
+                    res.redirect("/posts/new")
                 }
             })
         }
@@ -206,6 +212,7 @@ app.delete("/partners/:id",function(req,res){
 //==============LOGIN========================
 //SHOW
 app.get("/login", function(req, res) {
+    req.flash("succes", "Je post is succesvol opgestuurd!")
     res.render("login.ejs")
 })
 
