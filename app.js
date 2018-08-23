@@ -180,23 +180,8 @@ app.get("/partners",isLoggedIn, function(req, res){
     })    
 })
 
-//SHOW SINGLE
-app.get("/partners/:id", function(req, res) {
-    Partner.findById(req.params.id, function(err, foundPartner) {
-        if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
-            console.log(err)
-            res.redirect("back")
-        }else{
-            res.render("partner.ejs", {partner: foundPartner})
-        }
-    })
-})
-
-
-
 //NEW
-app.get("/newpartner", isLoggedIn, function(req, res){
+app.get("/partners/new", isLoggedIn, function(req, res){
     res.render("newpartner.ejs")
 })
 
@@ -214,6 +199,23 @@ app.post("/partners", function(req, res){
         }
     })
 })
+
+
+//SHOW SINGLE
+app.get("/partners/:id", function(req, res) {
+    Partner.findById(req.params.id, function(err, foundPartner) {
+        if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
+            console.log(err)
+            res.redirect("back")
+        }else{
+            res.render("partner.ejs", {partner: foundPartner})
+        }
+    })
+})
+
+
+
 
 
 //EDIT
@@ -337,7 +339,10 @@ app.post("/register", function(req,res){
 })*/
 
 
-
+app.route('/*').get(function(req, res) {
+    req.flash("error","Unknown Url")
+    res.redirect("/");
+});
 
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
