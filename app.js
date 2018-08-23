@@ -31,6 +31,7 @@ passport.deserializeUser(User.deserializeUser())
 app.use(function(req, res, next){       //custom middleware, that adds the logged in users information to all our routes
     res.locals.currentUser = req.user
     res.locals.succes= req.flash("succes")
+    res.locals.error= req.flash("error")
     next()
 })
 
@@ -52,7 +53,9 @@ app.get("/", function(req, res){
 app.get("/posts", isLoggedIn, function(req, res){
     Partner.find({}).populate("posts").exec(function(err, allPartners){
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
+            res.redirect("back")
         }else{
             res.render("posts.ejs",{partners: allPartners})
         }
@@ -63,7 +66,9 @@ app.get("/posts", isLoggedIn, function(req, res){
 app.get("/posts/new", function(req, res){
     Partner.find({}, function(err, allPartners) {
         if(err){
+            req.flash("error", "Er is iets fout gegaan! neem aub contact op met ons.")
             console.log(err)
+            res.redirect("https://www.2brand.be")
         }else{
             res.render("newpost.ejs", {partners: allPartners})
         }
@@ -74,7 +79,9 @@ app.get("/posts/new", function(req, res){
 app.post("/posts", function(req, res){
     Partner.findOne({name: req.body.partner}, function(err, foundPartner){
         if(err){
+            req.flash("error", "Er is iets fout gegaan! neem aub contact op met ons.")
             console.log(err)
+            res.redirect("back")
         }else{
             var currentTime = moment().tz("Europe/Paris").format('DD/MM/YYYY HH:mm:ss ')
             var newPost = {instaname: req.body.instaname, partner: req.body.partner, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}
@@ -98,21 +105,37 @@ app.post("/posts", function(req, res){
 app.put("/posts/:id/status", function(req,res){
     Post.findById(req.params.id, function(err, foundPost) {
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
+            res.redirect("back")
         }else{
-            var newstatus;
-            if(foundPost.status){
-                newstatus = false
-            }else{
-                newstatus = true
+            if(!foundPost.status){  //als er nog geen mail gestuurd is => iupdate de status
+                Partner.findOne({voordeel: foundPost.voordeel}, function(err, foundPartner) {//selecteer de partner op basis van gekozen voordeel
+                    if(err){
+                        req.flash("error", "ERROR - ask your boy Wietse")
+                        console.log(err)
+                        res.redirect("back")
+                    }else{
+                        var code = foundPartner.codes.ongeclaimd[0] //Neem de eerste code
+                        if(code == null){   //als de code niet bestaat, er dus geen zijn
+                            req.flash("error", "Er zijn geen codes meer beschikbaar voor " + foundPartner.name)
+                        }else{
+                            //=> VERSTUUR EEN MAIL MET "CODE" <=
+                            
+                            foundPartner.codes.geclaimd.push(code)      //Verplaats de code van geclaimd naar ongeclaimd
+                            foundPartner.codes.ongeclaimd.pull(code)
+                            foundPartner.save()
+                            
+                            foundPost.status= true
+                            foundPost.code = code
+                            foundPost.save()
+      
+                            req.flash("succes", 'De code "'+ code +'" is verzonden naar ' + foundPost.email)
+                        }
+                        res.redirect("/posts")
+                    }
+                })
             }
-            Post.findByIdAndUpdate(req.params.id, {status: newstatus} ,function(err, updatedPartner){
-                if(err){
-                    console.log(err)
-                }else{
-                    res.redirect("/posts")
-                }
-            })
         }
     })
 })
@@ -120,17 +143,19 @@ app.put("/posts/:id/status", function(req,res){
 
 //DESTROY
 app.delete("/posts/:id",function(req,res){
-    
     Post.findById(req.params.id, function(err, post){       //needed to know which partner to remove it from
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
+            res.redirect("back")
         }else{
             Partner.update({name: post.partner},{$pull : {posts: req.params.id}}, function(){ //delete the id from the partners DB
                 post.remove(function(err){  //delete the post from the posts DB
                     if(err){
+                        req.flash("error", "ERROR - ask your boy Wietse")
                         console.log(err)
                     }else{  
-                        console.log("deleted")
+                        req.flash("error", "Post is succesvol verwijderd!")
                         res.redirect("/posts")
                     }
                 })
@@ -146,7 +171,9 @@ app.delete("/posts/:id",function(req,res){
 app.get("/partners",isLoggedIn, function(req, res){
     Partner.find({}, function(err, allPartners){
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
+            res.redirect("back")
         }else{
             res.render("partners.ejs",{partners: allPartners})
         }
@@ -157,7 +184,9 @@ app.get("/partners",isLoggedIn, function(req, res){
 app.get("/partners/:id", function(req, res) {
     Partner.findById(req.params.id, function(err, foundPartner) {
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
+            res.redirect("back")
         }else{
             res.render("partner.ejs", {partner: foundPartner})
         }
@@ -175,9 +204,11 @@ app.get("/partners/new", isLoggedIn, function(req, res){
 app.post("/partners", function(req, res){
     Partner.create(req.body.partner, function(err, newPartner){
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
             res.redirect("back")
         }else{
+            req.flash("succes", newPartner.name +" is toegevoegd!")
             res.redirect("/partners")
         }
     })
@@ -188,7 +219,9 @@ app.post("/partners", function(req, res){
 app.get("/partners/:id/edit", isLoggedIn, function(req, res){
     Partner.findById(req.params.id,function(err, foundPartner) {
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
+            res.redirect("back")
         }else{
             res.render("editpartner.ejs", {partner: foundPartner})
         }
@@ -201,8 +234,11 @@ app.get("/partners/:id/edit", isLoggedIn, function(req, res){
 app.put("/partners/:id", function(req,res){
     Partner.findByIdAndUpdate(req.params.id, req.body.partner ,function(err, updatedPartner){
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
+            console.log(err)
             res.redirect("back")
         }else{
+            req.flash("succes", updatedPartner.name + " is updated!")
             res.redirect("/partners")
         }
     })
@@ -212,9 +248,11 @@ app.put("/partners/:id", function(req,res){
 app.delete("/partners/:id",function(req,res){
     Partner.findByIdAndRemove(req.params.id, function(err){
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
+            res.redirect("back")
         }else{  
-            console.log("deleted")
+            req.flash("error", "Partner deleted!")
             res.redirect("/posts")
         }
     })
@@ -226,7 +264,9 @@ app.delete("/partners/:id",function(req,res){
 app.put("/partners/:id/addcodes", function(req, res) {
     Partner.findById(req.params.id, function(err, foundPartner){
         if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
+            res.redirect("back")
         }else{
             var aantalCodes = parseInt(req.body.aantalCodes)
             var possible = "123456789AZERTYUOPMLKHGFDSQWXCVBN";
@@ -238,6 +278,7 @@ app.put("/partners/:id/addcodes", function(req, res) {
                 foundPartner.codes.ongeclaimd.push(foundPartner.codes.voorstuk + code)
             }
             foundPartner.save()
+            req.flash("succes", "Er zijn " + aantalCodes + " codes gegenereerd voor " + foundPartner.name)
             res.redirect("/partners")
         }
     })
@@ -254,7 +295,6 @@ app.put("/partners/:id/addcodes", function(req, res) {
 //==============LOGIN========================
 //SHOW
 app.get("/login", function(req, res) {
-    req.flash("succes", "Je post is succesvol opgestuurd!")
     res.render("login.ejs")
 })
 
@@ -266,6 +306,7 @@ app.post("/login",   passport.authenticate("local", {successRedirect: "/posts",f
 //logout
 app.get("/logout", function(req, res) {
     req.logout()
+    req.flash("succes", "Logged out")
     res.redirect("/posts")
 })
 

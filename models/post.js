@@ -9,6 +9,10 @@ var postSchema = new mongoose.Schema({
     voordeel: String,
     tijdstip: String,
     partner: String,
+    code: {
+        type: String,
+        default: ""
+    },
     status: {
         type: Boolean,
         default: false

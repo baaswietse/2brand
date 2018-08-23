@@ -14,6 +14,7 @@
                             <th>email</th>
                             <th>link</th>
                             <th>gekozen voordeel</th>
+                            <th>Code</th>
                             <th>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</th>
                         </tr>
                     </thead>
@@ -27,9 +28,10 @@
                                 <td><%= post.email %></td>
                                 <td class="partnertlink postlinkwidth"><a target="_blank" href="<%= post.link %>"><%= post.link %></a></td>
                                 <td><%= post.voordeel %></td>
+                                <td><%= post.code %></td>
                                 <td class="buttons">
                                     <form method="POST" action="/posts/<%= post._id %>/status?_method=PUT" >
-                                        <input type="Submit" class="viewThisResult btn btn-xs btn-warning buttonmargin" value="Status">
+                                        <input <% if(post.status){ %>disabled <% } %> type="Submit" class="viewThisResult btn btn-xs btn-warning buttonmargin" value="Mail" onclick="return confirm('Code verzenden?')">
                                     </form>
                                     <form class="delete-form" method="POST" action="/posts/<%= post._id %>?_method=DELETE" >
                                         <input type="Submit" onclick="return confirm('Are you sure you want to delete this item?')" class="viewThisResult btn btn-xs btn-danger" value="Delete">
