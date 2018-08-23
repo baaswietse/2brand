@@ -196,7 +196,7 @@ app.get("/partners/:id", function(req, res) {
 
 
 //NEW
-app.get("/newpartner", function(req, res){
+app.get("/newpartner", isLoggedIn, function(req, res){
     res.render("newpartner.ejs")
 })
 
@@ -346,6 +346,9 @@ function isLoggedIn(req, res, next){
         res.redirect("/login")
     }
 }
+
+
+
 
 app.listen(process.env.PORT, process.env.IP, function(){
    console.log("The Server Has Started!")
