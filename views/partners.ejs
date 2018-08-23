@@ -6,10 +6,20 @@
                 <div class="col-md-4 col-sm-6">
                     <div id="partner-thumbnail" class="thumbnail animated zoomIn">
                         <h4 class="text-center"><%= partner.name %></h4>
-                        <img id="partnerimage" src="<%= partner.image %>">
-                        <p class="partner-text"><%= partner.voordeel %></p>
+                        <a href="/partners/<%= partner._id %>"><img id="partnerimage" src="<%= partner.image %>"></a>
+                        <p class="partner-text"><strong>voordeel:</strong> <%= partner.voordeel %></p>
+                        <p class="partner-text"><strong>voorstuk:</strong> <%= partner.codes.voorstuk %></p>
+                        
+                        
+                        
                         <a class="btn btn-sm btn-warning partner-text" href="/partners/<%= partner._id %>/edit">edit</a>
-                        <form class="delete-form" method="POST" action="/partners/<%= partner._id %>?_method=DELETE" >
+                        
+                        <form class="inline-form" method="POST" action="/partners/<%= partner._id %>/addcodes?_method=PUT" >
+                            <input class="smallInput"type="text" name="aantalCodes" placeholder="#codes">
+                            <input type="Submit" class="btn btn-sm btn-info" value="Add">
+                        </form>
+                        
+                        <form class="inline-form" method="POST" action="/partners/<%= partner._id %>?_method=DELETE" >
                             <input type="Submit" class="btn btn-sm btn-danger" value="Delete">
                         </form>
                     </div>

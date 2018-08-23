@@ -7,12 +7,26 @@
 #partnerimage{
     width: 100%;
 }
+.btnWrapper{
+    margin-bottom:5px;
+}
+.smallInput{
+    width: 20%;
+}
 .viewThisResult {
     display: none;
 }
  #optiontoggle:checked ~ * .viewThisResult{
     display: block;
 }
+.row-centered {
+    text-align:center;
+}
+.col-centered {
+    display:inline-block;
+    float:none;
+}
+
 .resultContainer{
     height: 65px
 }
@@ -31,7 +45,7 @@
     word-break: break-all;
     width: 20%
 }
-.delete-form{
+.inline-form{
     display: inline;
 }
 .partnerlink{

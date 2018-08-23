@@ -142,7 +142,7 @@ app.delete("/posts/:id",function(req,res){
 
 
 //==============PARTNERS==================
-//SHOW
+//SHOW ALL
 app.get("/partners",isLoggedIn, function(req, res){
     Partner.find({}, function(err, allPartners){
         if(err){
@@ -153,6 +153,19 @@ app.get("/partners",isLoggedIn, function(req, res){
     })    
 })
 
+//SHOW SINGLE
+app.get("/partners/:id", function(req, res) {
+    Partner.findById(req.params.id, function(err, foundPartner) {
+        if(err){
+            console.log(err)
+        }else{
+            res.render("partner.ejs", {partner: foundPartner})
+        }
+    })
+})
+
+
+
 //NEW
 app.get("/partners/new", isLoggedIn, function(req, res){
     res.render("newpartner.ejs")
@@ -160,8 +173,7 @@ app.get("/partners/new", isLoggedIn, function(req, res){
 
 //CREATE
 app.post("/partners", function(req, res){
-    var newPartner = {name: req.body.name, voordeel: req.body.voordeel, image: req.body.image}
-    Partner.create(newPartner, function(err, newPartner){
+    Partner.create(req.body.partner, function(err, newPartner){
         if(err){
             console.log(err)
             res.redirect("back")
@@ -207,6 +219,36 @@ app.delete("/partners/:id",function(req,res){
         }
     })
 })
+
+
+//--CODES---
+//UPDATE
+app.put("/partners/:id/addcodes", function(req, res) {
+    Partner.findById(req.params.id, function(err, foundPartner){
+        if(err){
+            console.log(err)
+        }else{
+            var aantalCodes = parseInt(req.body.aantalCodes)
+            var possible = "123456789AZERTYUOPMLKHGFDSQWXCVBN";
+            for(var i = 0; i < aantalCodes; i ++){
+                var code = ""
+                for(var j = 0; j < 4; j ++){
+                    code += possible.charAt(Math.floor(Math.random() * possible.length));
+                }
+                foundPartner.codes.ongeclaimd.push(foundPartner.codes.voorstuk + code)
+            }
+            foundPartner.save()
+            res.redirect("/partners")
+        }
+    })
+})
+
+
+
+
+
+
+
 
 
 //==============LOGIN========================
