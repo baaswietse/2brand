@@ -25,7 +25,7 @@
                                 <td><%= post.partner %></td>
                                 <td><%= post.tijdstip %></td>
                                 <td><%= post.email %></td>
-                                <td class="partnertlink postlinkwidth"><a href="<%= post.link %>"><%= post.link %></a></td>
+                                <td class="partnertlink postlinkwidth"><a target="_blank" href="<%= post.link %>"><%= post.link %></a></td>
                                 <td><%= post.voordeel %></td>
                                 <td class="buttons">
                                     <form method="POST" action="/posts/<%= post._id %>/status?_method=PUT" >

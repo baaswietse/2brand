@@ -46,16 +46,17 @@
                     <div class="form-group">
                         <input class="form-control" type="url" name="link" placeholder="Link vb. https://www.instagram.com/p/Bms7EccCnF3/?taken-by=2brand.be">
                     </div>
-                    
                     <div class="form-group">
-                        <select name="partner" form="partnerform" class="form-control">
+                        <label for="partner">Voor welke partner heb je een post gemaakt?</label>
+                        <select name="partner" form="partnerform" class="form-control id="partner">
                             <% partners.forEach(function(partner){ %>
                                 <option value="<%= partner.name %>"><%= partner.name %></option>
                             <% }) %>
                         </select>
                     </div>
                     <div class="form-group">
-                        <select name="voordeel" form="partnerform" class="form-control">
+                        <label for="voordeel">Kies je voordeel:</label>
+                        <select name="voordeel" form="partnerform" class="form-control" id="voordeel">
                             <% partners.forEach(function(partner){ %>
                                 <option value="<%= partner.voordeel %>"><%= partner.voordeel %></option>
                             <% }) %>
@@ -69,6 +70,8 @@
             </div>
         </div>
     </div>
+    
+    
     <div class="container">
         <% if(succes && succes.length > 0){ %>
             <div class="alert alert-success" role="alert">
