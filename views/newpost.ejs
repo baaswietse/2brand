@@ -29,17 +29,6 @@
         </nav>
     <% } %>
     
-    <div class="container">
-        <% if(succes && succes.length > 0){ %>
-            <div class="alert alert-success" role="alert">
-                <%= succes %>
-            </div>
-        <% } %>
-    </div>
-    
-    
-    
-    
     
     
     
@@ -79,6 +68,13 @@
                  <% if(currentUser){ %> <a href="/posts">Go Back</a> <% } %>
             </div>
         </div>
+    </div>
+    <div class="container">
+        <% if(succes && succes.length > 0){ %>
+            <div class="alert alert-success" role="alert">
+                <%= succes %>
+            </div>
+        <% } %>
     </div>
 
 <% include ./partials/footer.ejs %>
