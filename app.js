@@ -196,9 +196,10 @@ app.get("/partners/:id", function(req, res) {
 
 
 //NEW
-app.get("/partners/new", isLoggedIn, function(req, res){
+app.get("/newpartner", function(req, res){
     res.render("newpartner.ejs")
 })
+
 
 //CREATE
 app.post("/partners", function(req, res){
