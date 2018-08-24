@@ -4,7 +4,7 @@ var express = require("express"),
     moment = require("moment-timezone"),
     methodOverride  = require("method-override"),
     flash = require("connect-flash"),
-    newpostmail = require("./newpostmail"),
+    sendmail = require("./sendmail"),
     passport = require('passport'),
     LocalStrategy   = require("passport-local"),
     User = require("./models/user"),
@@ -92,7 +92,8 @@ app.post("/posts", function(req, res){
                 }else{
                     foundPartner.posts.push(newPost)
                     foundPartner.save()
-                    newpostmail({instaname: req.body.instaname, partner: req.body.partner, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}) //sends us a mail, see newpostmail file
+                    sendmail.notification(newPost) //sends us a mail, see sendmail file
+                    sendmail.confirm(newPost)
                     req.flash("succes", "Je post is succesvol opgestuurd! Houd je mailbox zeker in het oog, en vergeet niet bij spam te checken. Binnen de 24u ontvangt u het voordeel van ons!")
                     res.redirect("/posts/new")
                 }
@@ -120,7 +121,7 @@ app.put("/posts/:id/status", function(req,res){
                         if(code == null){   //als de code niet bestaat, er dus geen zijn
                             req.flash("error", "Er zijn geen codes meer beschikbaar voor " + foundPartner.name)
                         }else{
-                            //=> VERSTUUR EEN MAIL MET "CODE" <=
+                            
                             
                             foundPartner.codes.geclaimd.push(code)      //Verplaats de code van geclaimd naar ongeclaimd
                             foundPartner.codes.ongeclaimd.pull(code)
@@ -130,6 +131,8 @@ app.put("/posts/:id/status", function(req,res){
                             foundPost.code = code
                             foundPost.save()
       
+                            sendmail.code(foundPost)
+                            
                             req.flash("succes", 'De code "'+ code +'" is verzonden naar ' + foundPost.email)
                         }
                         res.redirect("/posts")
@@ -282,7 +285,7 @@ app.put("/partners/:id/addcodes", function(req, res) {
             }
             foundPartner.save()
             req.flash("succes", "Er zijn " + aantalCodes + " codes gegenereerd voor " + foundPartner.name)
-            res.redirect("/partners")
+            res.redirect("back")
         }
     })
 })
