@@ -135,7 +135,7 @@ app.put("/posts/:id/status", function(req,res){
                             
                             req.flash("succes", 'De code "'+ code +'" is verzonden naar ' + foundPost.email)
                         }
-                        res.redirect("/posts")
+                        res.redirect("back")
                     }
                 })
             }
@@ -143,6 +143,19 @@ app.put("/posts/:id/status", function(req,res){
     })
 })
 
+
+//UPDATE likes
+app.put("/posts/:id/likes", function(req, res) {
+    Post.findById(req.params.id, function(err, foundPost) {
+        if(err){
+            console.log(err)
+        }else{
+            foundPost.likes = req.body.likes
+            foundPost.save()
+            res.redirect("back")
+        }
+    })
+})
 
 //DESTROY
 app.delete("/posts/:id",function(req,res){
@@ -236,7 +249,7 @@ app.get("/partners/:id/edit", isLoggedIn, function(req, res){
 })
 
 
-//UPDATE
+//UPDATE - partner zelf
 app.put("/partners/:id", function(req,res){
     Partner.findByIdAndUpdate(req.params.id, req.body.partner ,function(err, updatedPartner){
         if(err){
@@ -264,9 +277,7 @@ app.delete("/partners/:id",function(req,res){
     })
 })
 
-
-//--CODES---
-//UPDATE
+//UPDATE - codes toevoegen
 app.put("/partners/:id/addcodes", function(req, res) {
     Partner.findById(req.params.id, function(err, foundPartner){
         if(err){

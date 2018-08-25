@@ -15,7 +15,8 @@
                             <th>link</th>
                             <th>gekozen voordeel</th>
                             <th>Code</th>
-                            <th>&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</th>
+                            <th>likes</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +30,13 @@
                                 <td class="partnertlink postlinkwidth"><a target="_blank" href="<%= post.link %>"><%= post.link %></a></td>
                                 <td><%= post.voordeel %></td>
                                 <td><%= post.code %></td>
+                                
+                                <td>
+                                    <form class="btnWrapper " method="POST" action="/posts/<%= post._id %>/likes?_method=PUT" >
+                                        <input class="smaillInput2" type="text" name="likes" value="<%= post.likes %>">
+                                    </form>
+                                </td>
+                                
                                 <td class="buttons">
                                     <form method="POST" action="/posts/<%= post._id %>/status?_method=PUT" >
                                         <input <% if(post.status){ %>disabled <% } %> type="Submit" class="viewThisResult btn btn-xs btn-warning buttonmargin" value="Mail" onclick="return confirm('Code verzenden?')">
