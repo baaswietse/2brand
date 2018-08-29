@@ -16,6 +16,7 @@
                             <th>gekozen voordeel</th>
                             <th>Code</th>
                             <th>likes</th>
+                            <th>followers</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -34,6 +35,12 @@
                                 <td>
                                     <form class="btnWrapper " method="POST" action="/posts/<%= post._id %>/likes?_method=PUT" >
                                         <input class="smaillInput2" type="text" name="likes" value="<%= post.likes %>">
+                                    </form>
+                                </td>
+                                
+                                <td>
+                                    <form class="btnWrapper " method="POST" action="/posts/<%= post._id %>/followers?_method=PUT" >
+                                        <input class="smaillInput2" type="text" name="followers" value="<%= post.followers %>">
                                     </form>
                                 </td>
                                 

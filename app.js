@@ -158,6 +158,20 @@ app.put("/posts/:id/likes", function(req, res) {
     })
 })
 
+//UPDATE followers
+app.put("/posts/:id/followers", function(req, res) {
+    Post.findById(req.params.id, function(err, foundPost) {
+        if(err){
+            console.log(err)
+        }else{
+            foundPost.followers = req.body.followers
+            foundPost.save()
+            res.redirect("back")
+        }
+    })
+})
+
+
 //DESTROY
 app.delete("/posts/:id",function(req,res){
     Post.findById(req.params.id, function(err, post){       //needed to know which partner to remove it from
@@ -220,17 +234,29 @@ app.post("/partners", function(req, res){
 
 //SHOW SINGLE
 app.get("/partners/:id", function(req, res) {
-    Partner.findById(req.params.id, function(err, foundPartner) {
+    Partner.findById(req.params.id).populate("posts").exec(function(err, foundPartner){
+        //console.log(foundPartner)
         if(err){
             req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
             res.redirect("back")
         }else{
-            res.render("partner.ejs", {partner: foundPartner})
+            var berijk = {totalFollowers: 0 , totalLikes: 0}
+            //sum of the followers of a user that made a post
+            for(var i = 0; i < foundPartner.posts.length; i ++){
+                berijk.totalFollowers += parseInt(foundPartner.posts[i].followers)
+            }
+            //sum of the likes for a partner
+            for(var i = 0; i < foundPartner.posts.length; i ++){
+                berijk.totalLikes += parseInt(foundPartner.posts[i].likes)
+            }
+            //Satistic 'berijk'
+            berijk.berijkEquivalent = Math.floor(berijk.totalLikes *5 + berijk.totalFollowers *0.5)
+            console.log(berijk)
+            res.render("partner.ejs", {partner: foundPartner, berijk: berijk})
         }
     })
 })
-
 
 
 

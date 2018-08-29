@@ -13,6 +13,10 @@ var postSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    followers: {
+        type: String,
+        default: ""
+    },
     code: {
         type: String,
         default: ""

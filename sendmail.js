@@ -69,7 +69,7 @@ function codeMail(post){
     if (err) throw err
     
     var os = require("os");
-    var mail = data.split(os.EOL) //array splitted by 'new lines'
+    var mail = data.split(os.EOL) //array => splitted by 'new lines'
     
     
     var transporter = nodemailer.createTransport({
@@ -87,7 +87,7 @@ function codeMail(post){
       from: 'Wietse van 2brand <info@2brand.be>', // sender address
       to: post.email, // list of receivers
       subject: 'Je code: ' + post.code,// Subject line
-      html: mail[0] + post.instaname + mail[1] + post.code + mail[2] +post.voordeel  + mail[3]
+      html: mail[0] + post.instaname + mail[1] + post.partner + mail[2] + post.code + mail[3] +post.voordeel  + mail[4]
     };
     
     transporter.sendMail(mailOptions, function(err, info) {

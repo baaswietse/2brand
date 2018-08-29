@@ -12,7 +12,7 @@
                 <a class="btn btn-sm btn-warning btnWrapper" href="/partners/<%= partner._id %>/edit">edit</a>
                 
                 <form class="btnWrapper" method="POST" action="/partners/<%= partner._id %>/addcodes?_method=PUT" >
-                    <input type="Submit" class="btn btn-sm btn-info" value="Add">
+                    <input type="Submit" class="btn btn-sm btn-info" value="Add" onclick="return confirm('Are you sure you want to make extra codes')">
                     <input class="smallInput" type="text" name="aantalCodes" placeholder="#codes">
                 </form>
                 
@@ -24,7 +24,7 @@
              <div class="col-md-2">          
                 <table class="table">
                     <thead>
-                        <tr><strong>Ongeclaimde codes</strong></tr>
+                        <tr><th><strong>Ongeclaimde codes</strong></th></tr>
                     </thead>
                     <tbody>
                         <% partner.codes.ongeclaimd.forEach(function(ongeclaimd){  %>
@@ -35,10 +35,11 @@
                     </tbody>
                 </table>   
             </div>
+            
             <div class="col-md-2">          
                 <table class="table">
                     <thead>
-                        <tr><strong>Geclaimde codes</strong></tr>
+                        <tr><th><strong>Geclaimde codes</strong></tr></th>
                     </thead>
                     <tbody>
                         <% partner.codes.geclaimd.forEach(function(ongeclaimd){  %>
@@ -47,12 +48,28 @@
                         </tr>
                         <% }) %>
                     </tbody>
-                </table>        
-                        
-                        
-                        
-                
+                </table>     
             </div>
+            
+            <div class="col-md-4">          
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><strong>Total likes</strong></th>
+                            <th><strong>Total followers</strong></th>
+                            <th><strong>Berijkequivalent</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                           <td><%= berijk.totalLikes %></td>
+                           <td><%= berijk.totalFollowers %></td>
+                           <td><%= berijk.berijkEquivalent %></td>
+                    </tbody>
+                </table>
+            </div>
+            
+            
         </div> 
     </div>
 
