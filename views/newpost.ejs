@@ -38,13 +38,13 @@
             <div style="width: 80%; margin: 15px auto;">
                 <form action="/posts" method="POST" id="partnerform">
                     <div class="form-group">
-                        <input class="form-control" type="text" name="instaname" placeholder="Instagram naam">
+                        <input class="form-control" type="text" name="instaname" placeholder="Instagram naam" required>
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="email" name="email" placeholder="Email">
+                        <input class="form-control" type="email" name="email" placeholder="Email" required>
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="url" name="link" placeholder="Link vb. https://www.instagram.com/p/Bms7EccCnF3/?taken-by=2brand.be">
+                        <input class="form-control" type="url" name="link" placeholder="Link vb. https://www.instagram.com/p/Bms7EccCnF3/?taken-by=2brand.be" required>
                     </div>
                     <div class="form-group">
                         <label for="partner">Voor welke partner heb je een post gemaakt?</label>
@@ -61,6 +61,10 @@
                                 <option value="<%= partner.voordeel %>"><%= partner.voordeel %></option>
                             <% }) %>
                         </select>
+                    </div>
+                    <div class="form-check">
+                        <input required type="checkbox" class="form-check-input" id="termsofuse">
+                        <label  class="form-check-label" for="termsofuse">Ik accepteer de <a target="_blank" href="https://www.2brand.be/algemene-voorwaarden">algemene voorwaarden</a></label>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-lg btn-primary btn-block">Submit!</button>

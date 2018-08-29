@@ -16,7 +16,7 @@
                             <th>gekozen voordeel</th>
                             <th>Code</th>
                             <th>likes</th>
-                            <th>followers</th>
+                            <th>volgers</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -24,11 +24,11 @@
                         <input type="checkbox" id="optiontoggle"> status/delete
                         <% partner.posts.forEach(function(post){ %>
                             <tr <% if(post.status){ %> class="statusgoed resultContainer" <% }else{ %> class="statusslecht resultContainer" <% } %>>
-                                <td><a href="https://www.instagram.com/<%= post.instaname %>">@<%= post.instaname %></td></a>
+                                <td><a target="_blank" href="https://www.instagram.com/<%= post.instaname %>">@<%= post.instaname %></td></a>
                                 <td><%= post.partner %></td>
                                 <td><%= post.tijdstip %></td>
                                 <td><%= post.email %></td>
-                                <td class="partnertlink postlinkwidth"><a target="_blank" href="<%= post.link %>"><%= post.link %></a></td>
+                                <td class="partnerlink postlinkwidth"><a target="_blank" href="<%= post.link %>"><%= post.link %></a></td>
                                 <td><%= post.voordeel %></td>
                                 <td><%= post.code %></td>
                                 
