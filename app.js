@@ -171,6 +171,19 @@ app.put("/posts/:id/followers", function(req, res) {
     })
 })
 
+//UPDATE image
+app.put("/posts/:id/image", function(req, res) {
+    Post.findById(req.params.id, function(err, foundPost) {
+        if(err){
+            console.log(err)
+        }else{
+            foundPost.image = req.body.image
+            foundPost.save()
+            res.redirect("back")
+        }
+    })
+})
+
 
 //DESTROY
 app.delete("/posts/:id",function(req,res){

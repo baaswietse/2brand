@@ -68,9 +68,24 @@
                     </tbody>
                 </table>
             </div>
-            
-            
         </div> 
+        
+        <!-- Pictures of the posts -->
+        <header class="jumbotron">
+             <h2>Alle gemaakte posts</h2>
+        </header>
+        <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+            <% partner.posts.forEach(function(post){ %>
+                <div class="col-md-6">
+                    <div class="thumbnail">
+                       <img src="<%= post.image %>">
+                       
+                       
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        
     </div>
 
 <% include ./partials/footer.ejs %>

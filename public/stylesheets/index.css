@@ -7,7 +7,13 @@
 #partnerimage{
     width: 100%;
 }
-
+.jumbotron{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color:#337ab7;
+    color: #fff;
+    margin-top: 20px;
+}
 .btnWrapper{
     margin-bottom:5px;
 }

@@ -13,6 +13,7 @@
                             <th>tijdstip</th>
                             <th>email</th>
                             <th>link</th>
+                            <th>foto</th>
                             <th>gekozen voordeel</th>
                             <th>Code</th>
                             <th>likes</th>
@@ -29,6 +30,13 @@
                                 <td><%= post.tijdstip %></td>
                                 <td><%= post.email %></td>
                                 <td class="partnerlink postlinkwidth"><a target="_blank" href="<%= post.link %>"><%= post.link %></a></td>
+                                
+                                <td>
+                                    <form class="btnWrapper " method="POST" action="/posts/<%= post._id %>/image?_method=PUT" >
+                                        <input class="smaillInput2" type="text" name="image" value="<%= post.image %>">
+                                    </form>
+                                </td>
+                                
                                 <td><%= post.voordeel %></td>
                                 <td><%= post.code %></td>
                                 
