@@ -17,10 +17,7 @@ var postSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    image: {
-        type: String,
-        default: ""
-    },
+    image: String,
     code: {
         type: String,
         default: ""
