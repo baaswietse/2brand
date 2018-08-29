@@ -76,13 +76,13 @@
         </header>
         <div class="row text-center" style="display:flex; flex-wrap: wrap;">
             <% partner.posts.forEach(function(post){ %>
-                <div class="col-md-6">
-                    <div class="thumbnail">
-                       <img src="<%= post.image %>">
-                       
-                       
+                <% if(post.image){ %>
+                    <div class="col-md-6">
+                        <div class="thumbnail">
+                           <img src="<%= post.image %>">
+                        </div>
                     </div>
-                </div>
+                    <% } %>
             <% }); %>
         </div>
         
