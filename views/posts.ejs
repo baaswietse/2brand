@@ -24,7 +24,7 @@
                         <input type="checkbox" id="optiontoggle"> status/delete
                         <% partner.posts.forEach(function(post){ %>
                             <tr <% if(post.status){ %> class="statusgoed resultContainer" <% }else{ %> class="statusslecht resultContainer" <% } %>>
-                                <td><%= post.instaname %></td>
+                                <td><a href="https://www.instagram.com/<%= post.instaname %>">@<%= post.instaname %></td></a>
                                 <td><%= post.partner %></td>
                                 <td><%= post.tijdstip %></td>
                                 <td><%= post.email %></td>
