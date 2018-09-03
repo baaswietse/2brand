@@ -341,9 +341,24 @@ app.put("/partners/:id/addcodes", function(req, res) {
     })
 })
 
-
-
-
+//UPDATE - status aanpassen
+app.put("/partners/:id/status", function(req, res) {
+    console.log(req.body.status)
+    Partner.findById(req.params.id, function(err, foundPartner) {
+        if(err){
+            console.log(err)
+        }else{
+            if(req.body.status === "NIET ACTIEF"){
+                foundPartner.status = true
+                foundPartner.save()
+            }else if(req.body.status === "ACTIEF"){
+                foundPartner.status = false
+                foundPartner.save()
+            }
+            res.redirect("back")
+        }
+    })
+})
 
 
 

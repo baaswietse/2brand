@@ -11,6 +11,16 @@
                         
                         <p class="partner-text"><strong>Geclaimde codes:</strong> <%= partner.codes.geclaimd.length %></p>
                         
+                        <form class="partner-text" method="POST" action="/partners/<%= partner._id %>/status?_method=PUT">
+                            <div class="form-check form-check-inline">
+                                <% if(partner.status === true){ %> 
+                                    <input type="Submit" class="btn btn-sm btn-success" value="ACTIEF" name="status">
+                                <% }else{ %>
+                                    <input type="Submit" class="btn btn-sm btn-danger" value="NIET ACTIEF" name="status">
+                                <% } %>
+                            </div>
+                        </form>
+                        
                         <!--
                         <p class="partner-text"><strong>voorstuk:</strong> <%= partner.codes.voorstuk %></p>
                         
