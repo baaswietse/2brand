@@ -48,17 +48,21 @@
                     </div>
                     <div class="form-group">
                         <label for="partner">Voor welke partner heb je een post gemaakt?</label>
-                        <select name="partner" form="partnerform" class="form-control id="partner">
-                            <% partners.forEach(function(partner){ %>
-                                <option value="<%= partner.name %>"><%= partner.name %></option>
-                            <% }) %>
-                        </select>
+                            <select name="partner" form="partnerform" class="form-control id="partner">
+                                <% partners.forEach(function(partner){ %>
+                                    <% if(partner.status){ %>
+                                        <option value="<%= partner.name %>"><%= partner.name %></option>
+                                    <% } %>
+                                <% }) %>
+                            </select>
                     </div>
                     <div class="form-group">
                         <label for="voordeel">Kies je voordeel:</label>
                         <select name="voordeel" form="partnerform" class="form-control" id="voordeel">
                             <% partners.forEach(function(partner){ %>
-                                <option value="<%= partner.voordeel %>"><%= partner.voordeel %></option>
+                                <% if(partner.status){ %>
+                                    <option value="<%= partner.voordeel %>"><%= partner.voordeel %></option>
+                                <% } %>
                             <% }) %>
                         </select>
                     </div>

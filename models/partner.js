@@ -6,6 +6,10 @@ var partnerSchema = new mongoose.Schema({
     name: String,
     voordeel: String,
     image: String,
+    status: {
+        type: Boolean,
+        default: true
+    },
     codes: {
         voorstuk: String,
         geclaimd: [String],
