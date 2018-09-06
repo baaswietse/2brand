@@ -43,7 +43,7 @@ app.use(express.static(__dirname + "/public"))      //links to the css folder
 app.use(methodOverride("_method"))  
 
 //console.log(process.env.DATABASEURL)
-mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true })     //DEPLOYMENT DB: "mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand"
+mongoose.connect("mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev", { useNewUrlParser: true })     //DEPLOYMENT DB: "mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand"
                                                                         //DEVELOPMENT DB: "mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev"
 
 //================POSTS====================
@@ -257,11 +257,13 @@ app.get("/partners/:id", function(req, res) {
             var berijk = {totalFollowers: 0 , totalLikes: 0}
             //sum of the followers of a user that made a post
             for(var i = 0; i < foundPartner.posts.length; i ++){
-                berijk.totalFollowers += parseInt(foundPartner.posts[i].followers)
-            }
-            //sum of the likes for a partner
-            for(var i = 0; i < foundPartner.posts.length; i ++){
-                berijk.totalLikes += parseInt(foundPartner.posts[i].likes)
+                if(foundPartner.posts[i].followers){
+                   console.log(foundPartner.posts[i].followers)
+                    berijk.totalFollowers += parseInt(foundPartner.posts[i].followers) 
+                }
+                if(foundPartner.posts[i].likes){
+                    berijk.totalLikes += parseInt(foundPartner.posts[i].likes)
+                }
             }
             //Satistic 'berijk'
             berijk.berijkEquivalent = Math.floor(berijk.totalLikes *5 + berijk.totalFollowers *0.5)
