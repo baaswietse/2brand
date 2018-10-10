@@ -60,7 +60,7 @@
                         <label for="voordeel">Kies je voordeel:</label>
                         <select name="voordeel" form="partnerform" class="form-control" id="voordeel">
                             <% partners.forEach(function(partner){ %>
-                                <% if(partner.status){ %>
+                                <% if(partner.status && partner.voordeel != null ){ %>
                                     <option value="<%= partner.voordeel %>"><%= partner.voordeel %></option>
                                 <% } %>
                             <% }) %>
