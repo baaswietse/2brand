@@ -48,7 +48,7 @@
                     </div>
                     <div class="form-group">
                         <label for="partner">Voor welke partner heb je een post gemaakt?</label>
-                            <select name="partner" form="partnerform" class="form-control id="partner">
+                            <select name="partner" form="partnerform" class="form-control" id="partner">
                                 <% partners.forEach(function(partner){ %>
                                     <% if(partner.status){ %>
                                         <option value="<%= partner.name %>"><%= partner.name %></option>

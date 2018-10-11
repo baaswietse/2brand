@@ -43,7 +43,7 @@ app.use(express.static(__dirname + "/public"))      //links to the css folder
 app.use(methodOverride("_method"))  
 
 //console.log(process.env.DATABASEURL)
-mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true })     //DEPLOYMENT DB: "mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand"
+mongoose.connect("mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev", { useNewUrlParser: true })     //DEPLOYMENT DB: "mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand"
                                                                         //DEVELOPMENT DB: "mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev"
 
 //================POSTS====================
@@ -51,8 +51,11 @@ app.get("/", function(req, res){
     res.redirect("/posts")  
 })
 //SHOW
-app.get("/posts", isLoggedIn, function(req, res){
+app.get("/posts", isAdmin, function(req, res){
     Partner.find({}).populate("posts").exec(function(err, allPartners){
+        
+        console.log(req.user)
+        
         if(err){
             req.flash("error", "ERROR - ask your boy Wietse")
             console.log(err)
@@ -212,7 +215,7 @@ app.delete("/posts/:id",function(req,res){
 
 //==============PARTNERS==================
 //SHOW ALL
-app.get("/partners",isLoggedIn, function(req, res){
+app.get("/partners",isAdmin, function(req, res){
     Partner.find({}, function(err, allPartners){
         if(err){
             req.flash("error", "ERROR - ask your boy Wietse")
@@ -225,13 +228,13 @@ app.get("/partners",isLoggedIn, function(req, res){
 })
 
 //NEW
-app.get("/partners/new", isLoggedIn, function(req, res){
+app.get("/partners/new", isAdmin, function(req, res){
     res.render("newpartner.ejs")
 })
 
 
 //CREATE
-app.post("/partners", function(req, res){
+app.post("/partners", isAdmin, function(req, res){
     Partner.create(req.body.partner, function(err, newPartner){
         if(err){
             req.flash("error", "ERROR - ask your boy Wietse")
@@ -246,7 +249,7 @@ app.post("/partners", function(req, res){
 
 
 //SHOW SINGLE
-app.get("/partners/:id", function(req, res) {
+app.get("/partners/:id", isAdmin,function(req, res) {
     Partner.findById(req.params.id).populate("posts").exec(function(err, foundPartner){
         //console.log(foundPartner)
         if(err){
@@ -277,7 +280,7 @@ app.get("/partners/:id", function(req, res) {
 
 
 //EDIT
-app.get("/partners/:id/edit", isLoggedIn, function(req, res){
+app.get("/partners/:id/edit",isAdmin, isLoggedIn, function(req, res){
     Partner.findById(req.params.id,function(err, foundPartner) {
         if(err){
             req.flash("error", "ERROR - ask your boy Wietse")
@@ -292,7 +295,7 @@ app.get("/partners/:id/edit", isLoggedIn, function(req, res){
 
 
 //UPDATE - partner zelf
-app.put("/partners/:id", function(req,res){
+app.put("/partners/:id", isAdmin, function(req,res){
     Partner.findByIdAndUpdate(req.params.id, req.body.partner ,function(err, updatedPartner){
         if(err){
             req.flash("error", "ERROR - ask your boy Wietse")
@@ -306,7 +309,7 @@ app.put("/partners/:id", function(req,res){
 })
 
 //DESTROY
-app.delete("/partners/:id",function(req,res){
+app.delete("/partners/:id", isAdmin, function(req,res){
     Partner.findByIdAndRemove(req.params.id, function(err){
         if(err){
             req.flash("error", "ERROR - ask your boy Wietse")
@@ -320,7 +323,7 @@ app.delete("/partners/:id",function(req,res){
 })
 
 //UPDATE - codes toevoegen
-app.put("/partners/:id/addcodes", function(req, res) {
+app.put("/partners/:id/addcodes", isAdmin, function(req, res) {
     Partner.findById(req.params.id, function(err, foundPartner){
         if(err){
             req.flash("error", "ERROR - ask your boy Wietse")
@@ -344,7 +347,7 @@ app.put("/partners/:id/addcodes", function(req, res) {
 })
 
 //UPDATE - status aanpassen
-app.put("/partners/:id/status", function(req, res) {
+app.put("/partners/:id/status", isAdmin, function(req, res) {
     console.log(req.body.status)
     Partner.findById(req.params.id, function(err, foundPartner) {
         if(err){
@@ -388,26 +391,46 @@ app.get("/logout", function(req, res) {
 //============REGISTER========================
 //SHOW
 //=>UNCOMMENT TO ADD USERS//
-/*app.get("/register", function(req,res){
-    res.render("register.ejs")
+app.get("/register", isAdmin, function(req,res){
+     Partner.find({}, function(err, allPartners){
+        if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
+            console.log(err)
+            res.redirect("back")
+        }else{
+            res.render("register.ejs",{partners: allPartners})
+        }
+    })
 })
 
 //GET
-app.post("/register", function(req,res){
-    var newUser = new User({username: req.body.username})
-    User.register(newUser, req.body.password, function(err, user){
+app.post("/register", isAdmin, function(req,res){
+    console.log('body: ',  req.body)
+    Partner.findOne({name: req.body.partner}, function(err, foundPartner){
         if(err){
+            req.flash("error", "Partner niet gevonden")
             console.log(err)
-            res.redirect("/register")
+            res.redirect("back")
         }else{
-            console.log("new user:\n", user)   //the new user
-            passport.authenticate("local")(req, res, function(){    //log the new user in
-                res.redirect("/posts")
+            var newUser = new User({username: req.body.username})
+            User.register(newUser, req.body.password, function(err, user){
+                if(err){
+                    console.log(err)
+                    res.redirect("/register")
+                }else{
+                    //console.log("new user:\n", user)   //the new user
+                    user.partner.push(foundPartner)
+                    user.save()
+                    passport.authenticate("local")(req, res, function(){    //log the new user in
+                        res.redirect("/posts")
+                    })
+                    
+                }
             })
-            
         }
     })
-})*/
+})
+
 
 
 app.route('/*').get(function(req, res) {
@@ -423,6 +446,17 @@ function isLoggedIn(req, res, next){
     }
 }
 
+function isAdmin(req, res, next){
+    if(req.isAuthenticated()){
+        if(req.user.admin == true){
+            return next()
+        }else{
+            res.redirect("/login")
+        }
+    }else{
+        res.redirect("/login")
+    }
+}
 
 
 
