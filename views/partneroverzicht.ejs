@@ -1,0 +1,76 @@
+<% include ./partials/header.ejs %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h4 >Welkom <%= partner.name %>, dit is je 2brand overzichtspagina!</h4>
+            <img class="img partnerimage" src="<%= partner.image %>">
+        </div>
+         <div class="col-md-2">          
+            <table class="table">
+                <thead>
+                    <tr><th><strong>Ongeclaimde codes</strong></th></tr>
+                </thead>
+                <tbody>
+                    <% partner.codes.ongeclaimd.forEach(function(ongeclaimd){  %>
+                    <tr>
+                        <td><%= ongeclaimd %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>   
+        </div>
+        
+        <div class="col-md-2">          
+            <table class="table">
+                <thead>
+                    <tr><th><strong>Geclaimde codes</strong></tr></th>
+                </thead>
+                <tbody>
+                    <% partner.codes.geclaimd.forEach(function(ongeclaimd){  %>
+                    <tr>
+                        <td><%= ongeclaimd %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>     
+        </div>
+        
+        <div class="col-md-4">          
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><strong>Total likes</strong></th>
+                        <th><strong>Total volgers</strong></th>
+                        <th><strong>Berijkequivalent</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                       <td><%= berijk.totalLikes %></td>
+                       <td><%= berijk.totalFollowers %></td>
+                       <td><%= berijk.berijkEquivalent %></td>
+                </tbody>
+            </table>
+        </div>
+    </div> 
+    
+    <!-- Pictures of the posts -->
+    <header class="jumbotron">
+         <h2>Alle gemaakte posts</h2>
+    </header>
+    <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+        <% partner.posts.forEach(function(post){ %>
+            <% if(post.image){ %>
+                <div class="col-md-6">
+                    <div class="thumbnail">
+                       <a href="<%= post.link %>"><img src="<%= post.image %>"></a>
+                    </div>
+                </div>
+                <% } %>
+        <% }); %>
+    </div>
+    
+</div>
+
+<% include ./partials/footer.ejs %>

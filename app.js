@@ -365,7 +365,22 @@ app.put("/partners/:id/status", isAdmin, function(req, res) {
     })
 })
 
+//----------------------------------------PUPOLATE PARTNER WITH POSTS!!!--------------------------------
 
+//SHOW - overzicht
+app.get("/partners/:id/overzicht", isLoggedIn, function(req, res){
+    //console.log("currentuser: ", req.user)
+    User.findById(req.user).populate("partner").exec(function(err, foundUser){
+        if(err){
+            req.flash("error", "ERROR - ask your boy Wietse")
+            console.log(err)
+            res.redirect("back")
+        }else{
+            console.log("foundUser: ", foundUser)
+            res.render("partneroverzicht.ejs", {partner: foundUser.partner, berijk: {totalLikes: 10, totalFollowers: 20, berijkEquivalent:20}})
+        }
+    })
+})
 
 
 
@@ -376,15 +391,20 @@ app.get("/login", function(req, res) {
 })
 
 //GET
-app.post("/login",   passport.authenticate("local", {successRedirect: "/posts",failureRedirect: "/login"})  ,function(req, res){
-                                                                                                                                    
-});  
+app.post("/login",   passport.authenticate("local", {failureRedirect: "/login", failureFlash: true})  ,function(req, res){
+    if(req.user.admin){
+        res.redirect("/posts")
+    }else{    
+        res.redirect("/partners/" + req.user.id + "/overzicht") 
+    }
+}); 
+
 
 //logout
 app.get("/logout", function(req, res) {
     req.logout()
     req.flash("succes", "Logged out")
-    res.redirect("/posts")
+    res.redirect("/login")
 })
 
 
@@ -416,13 +436,14 @@ app.post("/register", isAdmin, function(req,res){
             User.register(newUser, req.body.password, function(err, user){
                 if(err){
                     console.log(err)
+                    req.flash("error", err.message)
                     res.redirect("/register")
                 }else{
                     //console.log("new user:\n", user)   //the new user
-                    user.partner.push(foundPartner)
+                    user.partner = foundPartner
                     user.save()
                     passport.authenticate("local")(req, res, function(){    //log the new user in
-                        res.redirect("/posts")
+                        res.redirect("/partners/" + user.id + "/overzicht")
                     })
                     
                 }
@@ -442,6 +463,7 @@ function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
         return next()
     }else{
+        req.flash("error", "Meld je aan om deze pagina te bekijken")
         res.redirect("/login")
     }
 }
@@ -451,9 +473,11 @@ function isAdmin(req, res, next){
         if(req.user.admin == true){
             return next()
         }else{
-            res.redirect("/login")
+            req.flash("error", "Geen rechten op deze pagina")
+            res.redirect("/back")
         }
     }else{
+        req.flash("error", "Meld je aan als administrator om deze pagina te bekijken")
         res.redirect("/login")
     }
 }
