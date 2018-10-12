@@ -48,7 +48,7 @@ mongoose.connect("mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2brandde
 
 //================POSTS====================
 app.get("/", function(req, res){
-    res.redirect("/posts")  
+    res.redirect("/login")  
 })
 //SHOW
 app.get("/posts", isAdmin, function(req, res){
@@ -57,7 +57,7 @@ app.get("/posts", isAdmin, function(req, res){
         console.log(req.user)
         
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -83,7 +83,7 @@ app.get("/posts/new", function(req, res){
 app.post("/posts", function(req, res){
     Partner.findOne({name: req.body.partner}, function(err, foundPartner){
         if(err){
-            req.flash("error", "Er is iets fout gegaan! neem aub contact op met ons.")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -91,6 +91,7 @@ app.post("/posts", function(req, res){
             var newPost = {instaname: req.body.instaname, partner: req.body.partner, tijdstip: currentTime, email: req.body.email, link: req.body.link, voordeel: req.body.voordeel}
             Post.create(newPost, function(err, newPost){
                 if(err){
+                    req.flash("error", err.message)
                     console.log(err)
                     res.redirect("back")
                 }else{
@@ -110,14 +111,14 @@ app.post("/posts", function(req, res){
 app.put("/posts/:id/status", function(req,res){
     Post.findById(req.params.id, function(err, foundPost) {
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
             if(!foundPost.status){  //als er nog geen mail gestuurd is => iupdate de status
                 Partner.findOne({voordeel: foundPost.voordeel}, function(err, foundPartner) {//selecteer de partner op basis van gekozen voordeel
                     if(err){
-                        req.flash("error", "ERROR - ask your boy Wietse")
+                        req.flash("error", err.message)
                         console.log(err)
                         res.redirect("back")
                     }else{
@@ -152,7 +153,9 @@ app.put("/posts/:id/status", function(req,res){
 app.put("/posts/:id/likes", function(req, res) {
     Post.findById(req.params.id, function(err, foundPost) {
         if(err){
+            req.flash("error", err.message)
             console.log(err)
+            res.redirect("back")
         }else{
             foundPost.likes = req.body.likes
             foundPost.save()
@@ -165,7 +168,9 @@ app.put("/posts/:id/likes", function(req, res) {
 app.put("/posts/:id/followers", function(req, res) {
     Post.findById(req.params.id, function(err, foundPost) {
         if(err){
+            req.flash("error", err.message)
             console.log(err)
+            res.redirect("back")
         }else{
             foundPost.followers = req.body.followers
             foundPost.save()
@@ -178,7 +183,9 @@ app.put("/posts/:id/followers", function(req, res) {
 app.put("/posts/:id/image", function(req, res) {
     Post.findById(req.params.id, function(err, foundPost) {
         if(err){
+            req.flash("error", err.message)
             console.log(err)
+            res.redirect("back")
         }else{
             foundPost.image = req.body.image
             foundPost.save()
@@ -192,15 +199,16 @@ app.put("/posts/:id/image", function(req, res) {
 app.delete("/posts/:id",function(req,res){
     Post.findById(req.params.id, function(err, post){       //needed to know which partner to remove it from
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
             Partner.update({name: post.partner},{$pull : {posts: req.params.id}}, function(){ //delete the id from the partners DB
                 post.remove(function(err){  //delete the post from the posts DB
                     if(err){
-                        req.flash("error", "ERROR - ask your boy Wietse")
+                        req.flash("error", err.message)
                         console.log(err)
+                        res.redirect("back")
                     }else{  
                         req.flash("error", "Post is succesvol verwijderd!")
                         res.redirect("/posts")
@@ -218,7 +226,7 @@ app.delete("/posts/:id",function(req,res){
 app.get("/partners",isAdmin, function(req, res){
     Partner.find({}, function(err, allPartners){
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -237,7 +245,7 @@ app.get("/partners/new", isAdmin, function(req, res){
 app.post("/partners", isAdmin, function(req, res){
     Partner.create(req.body.partner, function(err, newPartner){
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -253,7 +261,7 @@ app.get("/partners/:id", isAdmin,function(req, res) {
     Partner.findById(req.params.id).populate("posts").exec(function(err, foundPartner){
         //console.log(foundPartner)
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -283,7 +291,7 @@ app.get("/partners/:id", isAdmin,function(req, res) {
 app.get("/partners/:id/edit",isAdmin, isLoggedIn, function(req, res){
     Partner.findById(req.params.id,function(err, foundPartner) {
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -298,7 +306,7 @@ app.get("/partners/:id/edit",isAdmin, isLoggedIn, function(req, res){
 app.put("/partners/:id", isAdmin, function(req,res){
     Partner.findByIdAndUpdate(req.params.id, req.body.partner ,function(err, updatedPartner){
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -312,7 +320,7 @@ app.put("/partners/:id", isAdmin, function(req,res){
 app.delete("/partners/:id", isAdmin, function(req,res){
     Partner.findByIdAndRemove(req.params.id, function(err){
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{  
@@ -326,7 +334,7 @@ app.delete("/partners/:id", isAdmin, function(req,res){
 app.put("/partners/:id/addcodes", isAdmin, function(req, res) {
     Partner.findById(req.params.id, function(err, foundPartner){
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -351,7 +359,9 @@ app.put("/partners/:id/status", isAdmin, function(req, res) {
     console.log(req.body.status)
     Partner.findById(req.params.id, function(err, foundPartner) {
         if(err){
+            req.flash("error", err.message)
             console.log(err)
+            res.redirect("back")
         }else{
             if(req.body.status === "NIET ACTIEF"){
                 foundPartner.status = true
@@ -372,12 +382,21 @@ app.get("/partners/:id/overzicht", isLoggedIn, function(req, res){
     //console.log("currentuser: ", req.user)
     User.findById(req.user).populate("partner").exec(function(err, foundUser){
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
-            console.log("foundUser: ", foundUser)
-            res.render("partneroverzicht.ejs", {partner: foundUser.partner, berijk: {totalLikes: 10, totalFollowers: 20, berijkEquivalent:20}})
+            Partner.findById(foundUser.partner.id).populate('posts').exec(function(err, foundPartner) {
+                if(err){
+                    req.flash("error", err.message)
+                    console.log(err)
+                    res.redirect("back")
+                }else{
+                    foundUser.partner=foundPartner
+                    console.log("foundUser: ", foundUser.partner)
+                    res.render("partneroverzicht.ejs", {partner: foundUser.partner, berijk: {totalLikes: 10, totalFollowers: 20, berijkEquivalent:20}})  
+                }            
+            })
         }
     })
 })
@@ -414,7 +433,7 @@ app.get("/logout", function(req, res) {
 app.get("/register", isAdmin, function(req,res){
      Partner.find({}, function(err, allPartners){
         if(err){
-            req.flash("error", "ERROR - ask your boy Wietse")
+            req.flash("error", err.message)
             console.log(err)
             res.redirect("back")
         }else{
@@ -428,7 +447,7 @@ app.post("/register", isAdmin, function(req,res){
     console.log('body: ',  req.body)
     Partner.findOne({name: req.body.partner}, function(err, foundPartner){
         if(err){
-            req.flash("error", "Partner niet gevonden")
+            req.flash("error", "Gekozen partner niet gevonden")
             console.log(err)
             res.redirect("back")
         }else{
