@@ -392,9 +392,27 @@ app.get("/partners/:id/overzicht", isLoggedIn, function(req, res){
                     console.log(err)
                     res.redirect("back")
                 }else{
-                    foundUser.partner=foundPartner
+                    foundUser.partner=foundPartner                      //populate the partner from the user with posts 
                     console.log("foundUser: ", foundUser.partner)
-                    res.render("partneroverzicht.ejs", {partner: foundUser.partner, berijk: {totalLikes: 10, totalFollowers: 20, berijkEquivalent:20}})  
+                    
+                    //-----------------------------------------BERIJK------------------------------------------------
+                    var berijk = {totalFollowers: 0 , totalLikes: 0}
+                    //sum of the followers of a user that made a post
+                    for(var i = 0; i < foundPartner.posts.length; i ++){
+                        if(foundPartner.posts[i].followers){
+                           console.log(foundPartner.posts[i].followers)
+                            berijk.totalFollowers += parseInt(foundPartner.posts[i].followers) 
+                        }
+                        if(foundPartner.posts[i].likes){
+                            berijk.totalLikes += parseInt(foundPartner.posts[i].likes)
+                        }
+                    }
+                    //statistisch 'berijk'
+                    berijk.berijkEquivalent = Math.floor(berijk.totalLikes *5 + berijk.totalFollowers *0.5)
+                    //-------------------------------------------------------------------------------------------------
+                    
+                    
+                    res.render("partneroverzicht.ejs", {partner: foundUser.partner, berijk: berijk})  
                 }            
             })
         }
