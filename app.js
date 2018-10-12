@@ -54,7 +54,7 @@ app.get("/", function(req, res){
 //SHOW
 app.get("/posts", isAdmin, function(req, res){
     Partner.find({}).populate("posts").exec(function(err, allPartners){
-        console.log(req.user)
+        //console.log(req.user)
         
         if(err){
             req.flash("error", err.message)
@@ -269,7 +269,7 @@ app.get("/partners/:id", isAdmin,function(req, res) {
             //sum of the followers of a user that made a post
             for(var i = 0; i < foundPartner.posts.length; i ++){
                 if(foundPartner.posts[i].followers){
-                   console.log(foundPartner.posts[i].followers)
+                   //console.log(foundPartner.posts[i].followers)
                     berijk.totalFollowers += parseInt(foundPartner.posts[i].followers) 
                 }
                 if(foundPartner.posts[i].likes){
@@ -278,7 +278,7 @@ app.get("/partners/:id", isAdmin,function(req, res) {
             }
             //Satistic 'berijk'
             berijk.berijkEquivalent = Math.floor(berijk.totalLikes *5 + berijk.totalFollowers *0.5)
-            console.log(berijk)
+            //console.log(berijk)
             res.render("partner.ejs", {partner: foundPartner, berijk: berijk})
         }
     })
@@ -393,14 +393,14 @@ app.get("/partners/:id/overzicht", isLoggedIn, function(req, res){
                     res.redirect("back")
                 }else{
                     foundUser.partner=foundPartner                      //populate the partner from the user with posts 
-                    console.log("foundUser: ", foundUser.partner)
+                    console.log("foundUser: ", foundUser)
                     
                     //-----------------------------------------BERIJK------------------------------------------------
                     var berijk = {totalFollowers: 0 , totalLikes: 0}
                     //sum of the followers of a user that made a post
                     for(var i = 0; i < foundPartner.posts.length; i ++){
                         if(foundPartner.posts[i].followers){
-                           console.log(foundPartner.posts[i].followers)
+                           //console.log(foundPartner.posts[i].followers)
                             berijk.totalFollowers += parseInt(foundPartner.posts[i].followers) 
                         }
                         if(foundPartner.posts[i].likes){
@@ -463,30 +463,52 @@ app.get("/register", isAdmin, function(req,res){
 //GET
 app.post("/register", isAdmin, function(req,res){
     console.log('body: ',  req.body)
-    Partner.findOne({name: req.body.partner}, function(err, foundPartner){
-        if(err){
-            req.flash("error", "Gekozen partner niet gevonden")
-            console.log(err)
-            res.redirect("back")
-        }else{
-            var newUser = new User({username: req.body.username})
+    
+    //REGISTER ADMIN
+    if(req.body.partner == "admin"){
+        var newUser = new User({username: req.body.username})
             User.register(newUser, req.body.password, function(err, user){
                 if(err){
                     console.log(err)
                     req.flash("error", err.message)
                     res.redirect("/register")
                 }else{
-                    //console.log("new user:\n", user)   //the new user
-                    user.partner = foundPartner
+                    user.admin = true
                     user.save()
                     passport.authenticate("local")(req, res, function(){    //log the new user in
-                        res.redirect("/partners/" + user.id + "/overzicht")
+                        res.redirect("/posts")
                     })
-                    
                 }
             })
-        }
-    })
+        
+    //REGISTER USER    
+    }else{
+        Partner.findOne({name: req.body.partner}, function(err, foundPartner){
+            if(err){
+                req.flash("error", "Gekozen partner niet gevonden")
+                console.log(err)
+                res.redirect("back")
+            }else{
+                var newUser = new User({username: req.body.username})
+                User.register(newUser, req.body.password, function(err, user){
+                    if(err){
+                        console.log(err)
+                        req.flash("error", err.message)
+                        res.redirect("/register")
+                    }else{
+                        //console.log("new user:\n", user)   //the new user
+                        user.partner = foundPartner
+                        user.save()
+                        passport.authenticate("local")(req, res, function(){    //log the new user in
+                            res.redirect("/partners/" + user.id + "/overzicht")
+                        })
+                        
+                    }
+                })
+            }
+        })
+    }
+    
 })
 
 
