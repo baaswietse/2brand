@@ -3,11 +3,11 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h4 >Welkom <%= partner.name %>, dit is je 2brand overzichtspagina!</h4>
-            <img class="img partnerimage" src="<%= partner.image %>">
+            <h4 class="animated slideInLeft">Welkom <%= partner.name %>, dit is je 2brand overzichtspagina!</h4>
+            <img class="img partnerimage animated zoomIn" src="<%= partner.image %>">
         </div>
          <div class="col-md-2">          
-            <table class="table">
+            <table class="table animated slideInLeft">
                 <thead>
                     <tr><th><strong>Ongeclaimde codes</strong></th></tr>
                 </thead>
@@ -22,7 +22,7 @@
         </div>
         
         <div class="col-md-2">          
-            <table class="table">
+            <table class="table animated slideInLeft">
                 <thead>
                     <tr><th><strong>Geclaimde codes</strong></tr></th>
                 </thead>
@@ -37,7 +37,7 @@
         </div>
         
         <div class="col-md-4">          
-            <table class="table">
+            <table class="table animated slideInLeft">
                 <thead>
                     <tr>
                         <th><strong>Total likes</strong></th>
@@ -56,15 +56,15 @@
     </div> 
     
     <!-- Pictures of the posts -->
-    <header class="jumbotron" id="postsFotos">
+    <header class="jumbotron animated slideInDown" id="postsFotos">
          <h2>Alle gemaakte posts</h2>
     </header>
-    <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+    <div class="row text-center animated slideInUp" style="display:flex; flex-wrap: wrap;">
         <% partner.posts.forEach(function(post){ %>
             <% if(post.image){ %>
                 <div class="col-md-6">
                     <div class="thumbnail">
-                       <a href="<%= post.link %>"><img src="<%= post.image %>"></a>
+                       <a href="<%= post.link %>"><img src="<%= post.image %>" class="hvr-grow"></a>
                     </div>
                 </div>
                 <% } %>

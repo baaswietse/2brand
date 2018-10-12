@@ -5,6 +5,7 @@
         <link rel="icon" type="image/png" href="https://i.imgur.com/ZlgzOpq.png" sizes="32x32" />
         <link rel="icon" type="image/png" href="https://i.imgur.com/LvqIguP.png" sizes="16x16" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link href="/stylesheets/hover-min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
         <link rel="stylesheet" href="/stylesheets/index.css">
     </head>
@@ -17,7 +18,7 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <% if(currentUser){ %>
-                            <li><a href="/partners/<%= currentUser._id %>/overzicht">Welcome <b><%=currentUser.username %></b></a></li>
+                            <li><a href="/">Welcome <b><%=currentUser.username %></b></a></li>
                             <% if(currentUser.admin === true){ %>
                                 <li><a href="/posts">Posts</a></li>
                                 <li><a href="/partners">Partners</a></li>
@@ -29,6 +30,7 @@
                             <% } %>
                             <li><a href="/logout">Logout</a></li>
                         <% }else{ %>
+                            <li><a href="/posts/new">New post</a></li>
                             <li><a href="/login">Login</a></li>
                         <% } %>
                     </ul>

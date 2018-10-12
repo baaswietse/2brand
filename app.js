@@ -43,8 +43,9 @@ app.use(express.static(__dirname + "/public"))      //links to the css folder
 app.use(methodOverride("_method"))  
 
 //console.log(process.env.DATABASEURL)
-mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true })
-//mongoose.connect("mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev", { useNewUrlParser: true })     //DEPLOYMENT DB: "mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand"
+//mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true })
+var url = process.env.DATABASEURL || "mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev"
+mongoose.connect(url, { useNewUrlParser: true })     //DEPLOYMENT DB: "mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand"
                                                                         //DEVELOPMENT DB: "mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev"
 
 //================POSTS====================
@@ -424,7 +425,13 @@ app.get("/partners/:id/overzicht", isLoggedIn, function(req, res){
 //==============LOGIN========================
 //SHOW
 app.get("/login", function(req, res) {
-    res.render("login.ejs")
+    if(req.isAuthenticated() && req.user.admin == true){
+        res.redirect("/posts")
+    }else if(req.isAuthenticated() && req.user.admin == false){
+        res.redirect("/partners/" + req.user.id + "/overzicht") 
+    }else{
+       res.render("login.ejs") 
+    }
 })
 
 //GET
@@ -464,49 +471,53 @@ app.get("/register", isAdmin, function(req,res){
 app.post("/register", isAdmin, function(req,res){
     console.log('body: ',  req.body)
     
-    //REGISTER ADMIN
-    if(req.body.partner == "admin"){
-        var newUser = new User({username: req.body.username})
-            User.register(newUser, req.body.password, function(err, user){
-                if(err){
-                    console.log(err)
-                    req.flash("error", err.message)
-                    res.redirect("/register")
-                }else{
-                    user.admin = true
-                    user.save()
-                    passport.authenticate("local")(req, res, function(){    //log the new user in
-                        res.redirect("/posts")
-                    })
-                }
-            })
-        
-    //REGISTER USER    
+    if(req.body.password != req.body.confirmPassword){              //check if confirm password matches
+        req.flash("error", "Geef twee dezelfde wachtwoorden in")
+        res.redirect("/register")
     }else{
-        Partner.findOne({name: req.body.partner}, function(err, foundPartner){
-            if(err){
-                req.flash("error", "Gekozen partner niet gevonden")
-                console.log(err)
-                res.redirect("back")
-            }else{
-                var newUser = new User({username: req.body.username})
+        //REGISTER ADMIN
+        if(req.body.partner == "admin"){
+            var newUser = new User({username: req.body.username, admin: true})
                 User.register(newUser, req.body.password, function(err, user){
                     if(err){
                         console.log(err)
                         req.flash("error", err.message)
                         res.redirect("/register")
                     }else{
-                        //console.log("new user:\n", user)   //the new user
-                        user.partner = foundPartner
-                        user.save()
                         passport.authenticate("local")(req, res, function(){    //log the new user in
-                            res.redirect("/partners/" + user.id + "/overzicht")
+                            res.redirect("/posts")
                         })
-                        
                     }
                 })
-            }
-        })
+            
+        //REGISTER USER    
+        }else{
+            Partner.findOne({name: req.body.partner}, function(err, foundPartner){
+                if(err){
+                    req.flash("error", "Gekozen partner niet gevonden")
+                    console.log(err)
+                    res.redirect("back")
+                }else{
+                    var newUser = new User({username: req.body.username})
+                    User.register(newUser, req.body.password, function(err, user){
+                        if(err){
+                            console.log(err)
+                            req.flash("error", err.message)
+                            res.redirect("/register")
+                        }else{
+                            //console.log("new user:\n", user)   //the new user
+                            user.partner = foundPartner
+                            user.save()
+                            passport.authenticate("local")(req, res, function(){    //log the new user in
+                                res.redirect("/partners/" + user.id + "/overzicht")
+                            })
+                            
+                        }
+                    })
+                }
+            })
+        }
+        
     }
     
 })
