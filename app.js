@@ -43,7 +43,8 @@ app.use(express.static(__dirname + "/public"))      //links to the css folder
 app.use(methodOverride("_method"))  
 
 //console.log(process.env.DATABASEURL)
-mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true })     //DEPLOYMENT DB: "mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand"
+mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true })
+//mongoose.connect("mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev", { useNewUrlParser: true })     //DEPLOYMENT DB: "mongodb://baaswietse:W942018d@ds125352.mlab.com:25352/2brand"
                                                                         //DEVELOPMENT DB: "mongodb://baaswietse:W942018d@ds125422.mlab.com:25422/2branddev"
 
 //================POSTS====================
@@ -53,7 +54,6 @@ app.get("/", function(req, res){
 //SHOW
 app.get("/posts", isAdmin, function(req, res){
     Partner.find({}).populate("posts").exec(function(err, allPartners){
-        
         console.log(req.user)
         
         if(err){

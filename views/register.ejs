@@ -17,9 +17,7 @@
                     <label for="partner">Partner</label>
                         <select name="partner" form="registerform" class="form-control" id="partner">
                             <% partners.forEach(function(partner){ %>
-                                <% if(partner.status){ %>
                                     <option value="<%= partner.name %>"><%= partner.name %></option>
-                                <% } %>
                             <% }) %>
                         </select>
                 </div>
