@@ -7,6 +7,10 @@
 #partnerimage{
     width: 100%;
 }
+#postsFotos{
+    padding-top: 1px;
+    padding-bottom: 10px;
+}
 .jumbotron{
     padding-top: 10px;
     padding-bottom: 10px;
